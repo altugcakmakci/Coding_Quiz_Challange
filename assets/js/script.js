@@ -2,6 +2,7 @@ let displayBodyEl = document.querySelector(".display-body");
 let timeEl = document.querySelector(".time");
 let viewHsEl = document.querySelector(".view-hs");
 
+// Quiz questions, options, and answers
 let quizQuestions = {
     questions : ["Inside which HTML element do we put the JavaScript?","Which of the following type of variable is visible only within a function where it is defined?","Which of the following function of String object combines the text of two strings and returns a new string?","Which of the following function of Array object creates a new array with the results of calling a provided function on every element in this array?","Which of the following function of Array object adds and/or removes elements from an array?"],
     options : [["<js>","<javascript>","<script>","<scripting>"],["Global variable","Local variable","Both","None"],["add","merge","concat","append"],["push","join","pop","map"],["toSource","sort","splice","unshift"]],
@@ -19,6 +20,7 @@ let user = {
     initials: ""
 }
 
+// Initilizes the main screen
 function init(){
     displayBodyEl.innerHTML="";
     viewHsEl.textContent = "View High Scores";
@@ -201,6 +203,7 @@ function endGame (){
     newDiv.appendChild(newDivSubmit);
 
     newDivSubmit.addEventListener("click", function(event) {
+        event.preventDefault();
         user.initials = newDivInput.value;
         let scores = JSON.parse(localStorage.getItem("Scores")|| "[]");
         if (scores==null){
