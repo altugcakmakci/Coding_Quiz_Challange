@@ -4,9 +4,9 @@ let viewHsEl = document.querySelector(".view-hs");
 
 // Quiz questions, options, and answers
 let quizQuestions = {
-    questions : ["Inside which HTML element do we put the JavaScript?","Which of the following type of variable is visible only within a function where it is defined?","Which of the following function of String object combines the text of two strings and returns a new string?","Which of the following function of Array object creates a new array with the results of calling a provided function on every element in this array?","Which of the following function of Array object adds and/or removes elements from an array?"],
-    options : [["<js>","<javascript>","<script>","<scripting>"],["Global variable","Local variable","Both","None"],["add","merge","concat","append"],["push","join","pop","map"],["toSource","sort","splice","unshift"]],
-    answers : [2,1,2,3,2]
+    questions: ["Inside which HTML element do we put the JavaScript?", "Which of the following type of variable is visible only within a function where it is defined?", "Which of the following function of String object combines the text of two strings and returns a new string?", "Which of the following function of Array object creates a new array with the results of calling a provided function on every element in this array?", "Which of the following function of Array object adds and/or removes elements from an array?"],
+    options: [["<js>", "<javascript>", "<script>", "<scripting>"], ["Global variable", "Local variable", "Both", "None"], ["add", "merge", "concat", "append"], ["push", "join", "pop", "map"], ["toSource", "sort", "splice", "unshift"]],
+    answers: [2, 1, 2, 3, 2]
 }
 
 let nextQuestion = 0;
@@ -21,8 +21,8 @@ let user = {
 }
 
 // Initilizes the main screen
-function init(){
-    displayBodyEl.innerHTML="";
+function init() {
+    displayBodyEl.innerHTML = "";
     viewHsEl.textContent = "View High Scores";
     user.score = 0;
     correctAnswer = -1;
@@ -43,16 +43,17 @@ function init(){
     startButton = document.createElement("button");
     startButton.textContent = "Start Quiz";
     startButton.className = "quiz-button";
-    startButton.addEventListener("click", function(event) {
+    startButton.addEventListener("click", function (event) {
         startQuiz();
-    
+
     });
     displayBodyEl.appendChild(startButton);
     clearInterval(timerInterval);
 }
 
+// Starts the quiz - calls the function to display the next question 
 function startQuiz() {
-    displayBodyEl.innerHTML="";
+    displayBodyEl.innerHTML = "";
     viewHsEl.textContent = "";
     nextQuestion = 0;
 
@@ -61,27 +62,29 @@ function startQuiz() {
     setTime();
 }
 
+// Sets the timer
 function setTime() {
-    timerInterval = setInterval(function() {
+    timerInterval = setInterval(function () {
         secondsLeft--;
-        timeEl.textContent = "Time: " +secondsLeft ;
-  
-        if(secondsLeft === 0) {
+        timeEl.textContent = "Time: " + secondsLeft;
+
+        if (secondsLeft === 0) {
             clearInterval(timerInterval);
             endGame();
         }
-  
+
     }, 1000);
 }
 
+// Displays the next question if the limit is not reached
 function displayNextQuestion() {
 
-    if (nextQuestion===quizQuestions.questions.length){
+    if (nextQuestion === quizQuestions.questions.length) {
         endGame();
         return;
     }
     let isQuestionAnswered = false;
-    displayBodyEl.innerHTML="";
+    displayBodyEl.innerHTML = "";
     let newText = document.createElement("p");
     newText.textContent = quizQuestions.questions[nextQuestion];
     newText.style.fontSize = "24px";
@@ -91,14 +94,14 @@ function displayNextQuestion() {
     displayBodyEl.appendChild(newText);
 
     let newUl = document.createElement("ul");
-    newUl.setAttribute("style","list-style-type:none");
+    newUl.setAttribute("style", "list-style-type:none");
     displayBodyEl.appendChild(newUl);
 
-    for(let i=0;i<4;i++){
+    for (let i = 0; i < 4; i++) {
         let li = document.createElement("li");
         li.textContent = quizQuestions.options[nextQuestion][i];
         li.setAttribute("data-index", i);
-        li.className="option-list";
+        li.className = "option-list";
 
         newUl.appendChild(li);
     }
@@ -109,52 +112,55 @@ function displayNextQuestion() {
     newResult.textContent = "";
     displayBodyEl.appendChild(newResult);
 
-    newUl.addEventListener("click", function(event) {
-        if (isQuestionAnswered){
+    newUl.addEventListener("click", function (event) {
+        if (isQuestionAnswered) {
             return;
         }
         let element = event.target;
         if (element.matches("li")) {
-          let index = element.getAttribute("data-index");
-          if (index==correctAnswer){
-              userCorrect();
-          } else {
-              userWrong();
-          }
-          isQuestionAnswered = true;
-          let nextButton = document.createElement("button");
-          nextButton.textContent = "Next Question";
-          if (nextQuestion===quizQuestions.questions.length-1){
-            nextButton.textContent = "Done!";
-          }
-          nextButton.className = "quiz-button";
-          nextButton.addEventListener("click", function (event) {
-            nextQuestion++;
-            displayNextQuestion();
-          });
-          displayBodyEl.appendChild(nextButton); 
+            let index = element.getAttribute("data-index");
+            if (index == correctAnswer) {
+                userCorrect();
+            } else {
+                userWrong();
+            }
+            isQuestionAnswered = true;
+            let nextButton = document.createElement("button");
+            nextButton.textContent = "Next Question";
+            if (nextQuestion === quizQuestions.questions.length - 1) {
+                nextButton.textContent = "Done!";
+            }
+            nextButton.className = "quiz-button";
+            nextButton.addEventListener("click", function (event) {
+                nextQuestion++;
+                displayNextQuestion();
+            });
+            displayBodyEl.appendChild(nextButton);
         }
-      });
+    });
 }
 
+// Actions taken when user's answer is correct 
 function userCorrect() {
     user.score++;
-    newResult.textContent="Correct!";
+    newResult.textContent = "Correct!";
 }
 
+// Actions taken when user's answer is wrong
 function userWrong() {
-    newResult.textContent="Wrong!";
+    newResult.textContent = "Wrong!";
     secondsLeft -= 10;
-    if (secondsLeft<0){
-        secondsLeft=0;
+    if (secondsLeft < 0) {
+        secondsLeft = 0;
     }
 }
 
-function endGame (){
+// Ends the game - populates the end of game screen
+function endGame() {
 
     clearInterval(timerInterval);
 
-    displayBodyEl.innerHTML="";
+    displayBodyEl.innerHTML = "";
     let newh2 = document.createElement("h2");
     newh2.textContent = "All done!";
     newh2.style.fontSize = "36px";
@@ -163,7 +169,7 @@ function endGame (){
     displayBodyEl.appendChild(newh2);
 
     let newText = document.createElement("p");
-    newText.textContent = "Your score is "+user.score;
+    newText.textContent = "Your score is " + user.score;
     newText.style.fontSize = "24px";
     newText.style.width = "50%";
     newText.style.marginLeft = "auto";
@@ -171,7 +177,7 @@ function endGame (){
     displayBodyEl.appendChild(newText);
 
     let newDiv = document.createElement("div");
-    newDiv.style.display="flexbox";
+    newDiv.style.display = "flexbox";
     newDiv.style.width = "50%";
     newDiv.style.marginLeft = "auto";
     newDiv.style.marginRight = "auto";
@@ -202,46 +208,48 @@ function endGame (){
 
     newDiv.appendChild(newDivSubmit);
 
-    newDivSubmit.addEventListener("click", function(event) {
+    newDivSubmit.addEventListener("click", function (event) {
         event.preventDefault();
         user.initials = newDivInput.value;
-        let scores = JSON.parse(localStorage.getItem("Scores")|| "[]");
-        if (scores==null){
+        let scores = JSON.parse(localStorage.getItem("Scores") || "[]");
+        if (scores == null) {
             scores = [];
         }
         let initialFound = false;
-        for(let i=0;i<scores.length;i++){
-            if (scores[i].initials===user.initials){
-                initialFound= true;
-                if (scores[i].score < user.score){
+        for (let i = 0; i < scores.length; i++) {
+            if (scores[i].initials === user.initials) {
+                initialFound = true;
+                if (scores[i].score < user.score) {
                     scores[i].score = user.score;
                 }
 
             }
         }
-        if (!initialFound){
+        if (!initialFound) {
             scores.push(user);
         }
-        
-        localStorage.setItem("Scores",JSON.stringify(scores));
+
+        localStorage.setItem("Scores", JSON.stringify(scores));
         displayHighScores();
     });
-    
+
 
 }
 
-function compare( a, b ) {
-    if ( a.score > b.score ){
-      return -1;
+// Comparison function used to sort high scores
+function compare(a, b) {
+    if (a.score > b.score) {
+        return -1;
     }
-    if ( a.score < b.score ){
-      return 1;
+    if (a.score < b.score) {
+        return 1;
     }
     return 0;
-  }
+}
 
+// Displays high scores 
 function displayHighScores() {
-    displayBodyEl.innerHTML="";
+    displayBodyEl.innerHTML = "";
     timeEl.textContent = "";
     viewHsEl.textContent = "";
 
@@ -252,29 +260,29 @@ function displayHighScores() {
     newh2.style.marginRight = "auto";
     displayBodyEl.appendChild(newh2);
 
-    let scores = JSON.parse(localStorage.getItem("Scores")|| "[]");
-    if (scores!=null){
+    let scores = JSON.parse(localStorage.getItem("Scores") || "[]");
+    if (scores != null) {
         scores.sort(compare);
         localStorage.removeItem("Scores");
-        localStorage.setItem("Scores",JSON.stringify(scores));
+        localStorage.setItem("Scores", JSON.stringify(scores));
 
         let newOl = document.createElement("ol");
         displayBodyEl.appendChild(newOl);
 
-        for(let i=0;i<scores.length;i++){
+        for (let i = 0; i < scores.length; i++) {
             let scoreObj = JSON.parse(localStorage.getItem("Scores"))[i];
             let li = document.createElement("li");
-            li.innerHTML= scoreObj.initials + " <span class='score'>"+scoreObj.score+"</span>";
+            li.innerHTML = scoreObj.initials + " <span class='score'>" + scoreObj.score + "</span>";
             li.setAttribute("data-index", i);
             li.className = "score-list";
 
             newOl.appendChild(li);
         }
-        
+
     }
 
     let newDiv = document.createElement("div");
-    newDiv.style.display="flexbox";
+    newDiv.style.display = "flexbox";
     newDiv.style.width = "50%";
     newDiv.style.marginLeft = "auto";
     newDiv.style.marginRight = "auto";
@@ -283,7 +291,7 @@ function displayHighScores() {
     let goBackButton = document.createElement("button");
     goBackButton.textContent = "Go back";
     goBackButton.className = "quiz-button";
-    goBackButton.addEventListener("click", function(event) {
+    goBackButton.addEventListener("click", function (event) {
         init();
     });
     newDiv.appendChild(goBackButton);
@@ -291,7 +299,7 @@ function displayHighScores() {
     let clearHsButton = document.createElement("button");
     clearHsButton.textContent = "Clear scores";
     clearHsButton.className = "quiz-button";
-    clearHsButton.addEventListener("click", function(event) {
+    clearHsButton.addEventListener("click", function (event) {
         localStorage.removeItem("Scores");
         displayHighScores();
     });
@@ -299,7 +307,8 @@ function displayHighScores() {
 
 }
 
-viewHsEl.addEventListener("click", function(event) {
+// Event listener for the display high score text
+viewHsEl.addEventListener("click", function (event) {
     displayHighScores();
 });
 
